@@ -63,9 +63,10 @@ function getDefinitions() {
 
  }
 btn.addEventListener("click", () => getDefinitions());
-let input = document.getElementById("word").addEventListener("keyup", (e) => {
-    if (e.key === "13") {
+document.getElementById("word").addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
         e.preventDefault();
         btn.click();
     }
+    
 })
