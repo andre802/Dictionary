@@ -39,7 +39,7 @@ function App() {
             word={word}
             etymology={entry["about"]["etymology"]}
             phoneticSpelling={entry["about"]["phonetic spelling"]}
-            senses={entry[0]["entries"][0]["senses"]}
+            senses={entry}
             pronunciation={entry["about"]["pronunciations"]}
           />) : ""}
       </div>
