@@ -31,50 +31,53 @@ const parseJSON = (data) => {
 
     }
     word["about"]["etymology"] = data[0]["entries"][0]["etymologies"][0]
-            data[0]["entries"][0]["pronunciations"].forEach((pronunc, j) => {
-                if (pronunc.hasOwnProperty("audioFile")) {
-                    word["about"]["pronunciations"] = pronunc["audioFile"]
-                }
-                if (pronunc.hasOwnProperty("phoneticNotation") && pronunc["phoneticNotation"] === "IPA") {
-                    word["about"]["phonetic spelling"] = pronunc["phoneticSpelling"]
-                }
-            })
+    data[0]["entries"][0]["pronunciations"].forEach((pronunc, j) => {
+        if (pronunc.hasOwnProperty("audioFile")) {
+            word["about"]["pronunciations"] = pronunc["audioFile"]
+        }
+        if (pronunc.hasOwnProperty("phoneticNotation") && pronunc["phoneticNotation"] === "IPA") {
+            word["about"]["phonetic spelling"] = pronunc["phoneticSpelling"]
+        }
+    })
     for (let i = 0; i < data.length; i++) {
         word[i] = {
-            "entries": [],
+            "senses": [],
             "category": data[i]["lexicalCategory"]["text"]
         }
-        data[i]["entries"].forEach((result, j) => {
-            word[i]["entries"][j] = {};
-            if(!word[i]["entries"][j]["senses"]) {word[i]["entries"][j]["senses"] = {}}
-            result['senses'].forEach((sense, k) => {
-                if (word[i]["entries"][j]["senses"][k] == undefined) { word[i]["entries"][j]["senses"][k] = {
-                    "definitions": []
-                }}
-                word[i]["entries"][j]["senses"][k]["definitions"] = sense["definitions"][0];
+        data[i]["entries"].forEach((result) => {
+            result['senses'].forEach((sense) => {
+                let examples = []
                 if ("examples" in sense) {
-                    let examples = []
                     sense["examples"].forEach(example => {
                         examples.push(example["text"])
                     })
-                    word[i]["entries"][j]["senses"][k]["examples"] = examples;
+                }
+                let senseObj = {
+                    "definitions": sense["definitions"][0],
+                    "examples": examples
                 }
                 if ("subsenses" in sense) {
-                    word[i]["entries"][j]["senses"][k]["subsenses"] = {};
+                    senseObj["subsenses"] = [];
+                    let subsenses = [];
                     sense["subsenses"].forEach((subsense, l) => {
-                        word[i]["entries"][j]["senses"][k]["subsenses"][l] = {}
-                        word[i]["entries"][j]["senses"][k]["subsenses"][l]["definition"] = subsense["definitions"][0]
+                        let sub = {
+                            "definition": subsense["definitions"][0],
+                            "examples": []
+                        }
+                        let examples = []
                         if ('examples' in subsense) {
-                            let examples = []
                             subsense["examples"].forEach(example => {
                                 examples.push(example["text"])
                             })
-                            word[i]["entries"][j]["senses"][k]["subsenses"][l]["examples"] = examples;
                         }
+                        sub["examples"] = examples;
+                        subsenses.push(sub);
                     })
+                    senseObj["subsenses"] = subsenses;
                 }
+                word[i]["senses"].push(senseObj);
             })
-        });
+        })
     }
     return word;
 }

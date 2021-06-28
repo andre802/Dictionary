@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "build": "parcel public/main.html",
-    "start": "node server.js",
+    "start": "node server.js & cd client && npm start",
     "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

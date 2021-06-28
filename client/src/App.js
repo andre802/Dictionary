@@ -21,7 +21,7 @@ function App() {
       <h1>Dictionary</h1>
     </header>
     <div>
-      <form>
+      <form onSubmit={e => getData(e)}>
       <label>Word <input
         type="text"
         id="word"

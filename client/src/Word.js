@@ -8,12 +8,13 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
         allEntries[i] = {
             "about": ""
         };
-        
-        allEntries[i] = senses[relevantEntries[i]]["entries"][0]["senses"];
-        allEntries[i]["about"] = senses[relevantEntries[i]]["category"];
-        
+
+        allEntries[i] = senses[relevantEntries[i]];
+
     }
     entries = allEntries;
+    console.log(`Entries:`)
+    console.log(entries);
     // eslint-disable-next-line
 
     if (!word) return null;
@@ -28,57 +29,43 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
                     src={pronunciation}
                 ></audio>
             </div>
-            {/*Senses*/}
-            {entries !== undefined ? Object.keys(entries).map(key => {
-                console.log(entries[key])
-                return Object.keys(entries[key]).filter(el => el!== "about").map(innerKey => {
-                    return (
-                        <div className="sense">
-                            <p>{entries[key]["about"]}</p>
-                            {/*Definition */}
-                            <div className="definition">
-                                <h3>Definition</h3>
-                                <p>{entries[key][innerKey]["definitions"]}</p>
-                            </div>
-                            {/*Examples */}
-                            {entries[key][innerKey]["examples"] !== undefined ? (
-                                <div className="examples">
-                                    <h4>Examples</h4>
-                                    {entries[key][innerKey]["examples"].map(ex => {
-                                        ex = ex[0].toUpperCase() + ex.slice(1,);
-                                        return <p>{ex}</p>
-                                    })}
-                                </div>
-                            ) : ""}
-                            {/* Subsenses */}
-                            {entries[key][innerKey]["subsenses"] !== undefined ? (
-                                Object.keys(entries[key][innerKey]["subsenses"]).map(subsenseKey => (
-                                    <div className="subsense">
-                                        <h4>Subsense</h4>
-                                        <h5>Definition</h5>
-
-                                        <p>{entries[key][innerKey]["subsenses"][subsenseKey]["definition"]}</p>
-
-                                        {entries[key][innerKey]["subsenses"][subsenseKey]["examples"] ? (
-                                            <div>
-                                                <h5>Example</h5>
-                                                {entries[key][innerKey]["subsenses"][subsenseKey]["examples"].map(ex => {
-                                                    ex = ex[0].toUpperCase() + ex.slice(1,);
-                                                    return <p>{ex}</p>
-                                                })}
-
-
-                                            </div>) : ""}
-                                    </div>
-                                ))
-                            ) : ""}
+            {Object.keys(entries).length !== 0 ? Object.keys(entries).map(entryKey => (
+                <div className="sense">
+                    <p>{entries[entryKey]["category"]}</p>
+                    {entries[entryKey]["senses"].map(sense => (
+                        <>
+                        <div className="definition">
+                            <h3>Definition</h3>
+                            <p>{sense["definitions"]}</p>
                         </div>
-                    )
-                })
-            }) : ""}
-        </div>
-    )
+                        {sense["examples"] !== undefined ? (
+                            <div className="examples">
+                                <h4>Examples</h4>
+                                {sense["examples"].map(ex => {
+                                    ex = ex[0].toUpperCase() + ex.slice(1,);
+                                    return <p>{ex}</p>
+                                })}
+                            </div>
+                        ) : ""}
+                        {sense["subsenses"] !== undefined ? (
+                            sense["subsenses"].map(subsense => (
+                                <div className="subsense">
+                                    <h4>Subsense</h4>
+                                    <h5>Definition</h5>
+                                    <p>{subsense["definition"]}</p>
+                                    {subsense["examples"] ? (
+                                        <div>
+                                            <h5>Example</h5>
+                                            {subsense["examples"].map(ex => {
+                                                ex = ex[0].toUpperCase() + ex.slice(1,);
+                                                return <p>{ex}</p>
+                                            })}
+                                        </div>) : ""}
+                                </div>
+                             ))) : ""}</>))}
+                            </div>)) : ""}
+                        </div>
+    )}
+        
 
-
-}
 export default Word;

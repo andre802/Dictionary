@@ -26,7 +26,6 @@ def getWords():
     r = requests.get(url, headers = {'app_id': app_id, 'app_key': app_key})
     # print("code {}\n".format(r.status_code))
     response = r.json()
-    print(r.text)
     entries = list()
     results = response["results"][0]["lexicalEntries"]
     for i, result in enumerate(results):
