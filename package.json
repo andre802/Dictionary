@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "build": "node server.js & cd client && npm run start",
+    "start": "node server.js",
+    "build": "cd client && npm run start",
     "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
