@@ -82,7 +82,6 @@ const parseJSON = (data) => {
     return word;
 }
 
-
 const getInfo = (word) => {
     options.path = '/api/v2/entries/en-gb/' + word + '?fields=' + fields + '&strictMatch=' + strictMatch
     return fetch("https://" + options.host + options.path, options)
@@ -98,9 +97,7 @@ app.get("/search", async (req, res) => {
     let data = await getInfo(word)
     res.json(data);
 })
-app.use((req,res) => {
-    res.sendFile(path.resolve(__dirname, '/client/build','index.html'))
-})
+
 function logger(req, res, next) {
     console.log(req.originalUrl);
     next();
