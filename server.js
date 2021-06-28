@@ -98,7 +98,7 @@ app.get("/search", async (req, res) => {
     res.json(data);
 })
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve('client/build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'));
   });
 function logger(req, res, next) {
     console.log(req.originalUrl);
