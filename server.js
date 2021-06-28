@@ -1,7 +1,6 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const path = require('path');
-const hostname = process.env.hostname || "127.0.0.1";
 const port = process.env.PORT || 9000;
 const cors = require("cors");
 const app = express();
@@ -41,7 +40,6 @@ const parseJSON = (data) => {
                 }
             })
     for (let i = 0; i < data.length; i++) {
-        console.log(`index ${i}`)
         word[i] = {
             "entries": [],
             "category": data[i]["lexicalCategory"]["text"]
@@ -50,12 +48,10 @@ const parseJSON = (data) => {
             word[i]["entries"][j] = {};
             if(!word[i]["entries"][j]["senses"]) {word[i]["entries"][j]["senses"] = {}}
             result['senses'].forEach((sense, k) => {
-                console.log(`Index of each sense's definition ${k}`);
                 if (word[i]["entries"][j]["senses"][k] == undefined) { word[i]["entries"][j]["senses"][k] = {
                     "definitions": []
                 }}
                 word[i]["entries"][j]["senses"][k]["definitions"] = sense["definitions"][0];
-                console.log(sense["definitions"][0])
                 if ("examples" in sense) {
                     let examples = []
                     sense["examples"].forEach(example => {

@@ -11,7 +11,7 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
         
         allEntries[i] = senses[relevantEntries[i]]["entries"][0]["senses"];
         allEntries[i]["about"] = senses[relevantEntries[i]]["category"];
-        console.log(allEntries[i]);
+        
     }
     entries = allEntries;
     // eslint-disable-next-line
