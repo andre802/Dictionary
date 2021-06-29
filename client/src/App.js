@@ -9,7 +9,7 @@ function App() {
     console.log("click");
     if (document.getElementById("word").value === "") return;
     setWord(document.getElementById("word").value);
-    fetch(`/search?word=${document.getElementById("word").value}`)
+    fetch(`http://localhost:${process.env.PORT || 3000}/search?word=${document.getElementById("word").value}`)
       .then(resp => resp.json())
       .then(data => {
         setEntry(data);
