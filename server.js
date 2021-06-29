@@ -11,7 +11,7 @@ const app_key = "bb6d190a2a4a953d435b4caedbc486dd"; // insert your APP Key
 const wordId = "ace";
 const fields = ['definitions', 'etymologies', 'examples', 'pronunciations'];
 const strictMatch = "false";
-app.use(express.static(path.join(__dirname, 'build')))
+app.use(express.static(path.join(__dirname, 'client/build')))
 // app.use(express.static('/public'))
 const options = {
     host: 'od-api.oxforddictionaries.com',
@@ -106,3 +106,5 @@ function logger(req, res, next) {
 app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`)
 })
+
+module.exports = {port};
