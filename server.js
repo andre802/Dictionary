@@ -97,6 +97,9 @@ app.get("/search", async (req, res) => {
     let data = await getInfo(word)
     res.json(data);
 })
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'))
+})
 
 function logger(req, res, next) {
     console.log(req.originalUrl);
