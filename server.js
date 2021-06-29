@@ -90,6 +90,10 @@ const getInfo = (word) => {
         })
         .then(data => parseJSON(data));
 }
+// app.get("/", (req, res) => {
+//     console.log("send index")
+//     res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'))
+// })
 app.get("/search", async (req, res) => {
     let word = req.query.word;
     console.log(word);
@@ -97,9 +101,7 @@ app.get("/search", async (req, res) => {
     let data = await getInfo(word)
     res.json(data);
 })
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'))
-})
+
 
 function logger(req, res, next) {
     console.log(req.originalUrl);
