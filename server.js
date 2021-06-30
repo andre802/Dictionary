@@ -1,44 +1,64 @@
+require('dotenv').config();
+
 const express = require("express");
 const fetch = require("node-fetch");
 const path = require('path');
 const port = process.env.PORT || 3000;
+const app_id = process.env.APP_ID;
+const app_key = process.env.APP_KEY;
+
 const cors = require("cors");
 const app = express();
 app.use(logger);
 app.use(cors());
-const app_id = "18fe2bc0"; // insert your APP Id
-const app_key = "bb6d190a2a4a953d435b4caedbc486dd"; // insert your APP Key
-const wordId = "ace";
+app.use(express.static(path.join(__dirname, 'client/build')))
+
 const fields = ['definitions', 'etymologies', 'examples', 'pronunciations'];
 const strictMatch = "false";
-app.use(express.static(path.join(__dirname, 'client/build')))
-// app.use(express.static('/public'))
+
 const options = {
     host: 'od-api.oxforddictionaries.com',
     port: '443',
-    path: '/api/v2/entries/en-us/' + wordId + '?fields=' + fields + '&strictMatch=' + strictMatch,
+    path: "",
     method: "GET",
     headers: {
         'app_id': app_id,
         'app_key': app_key
     }
 };
-
-const parseJSON = (data) => {
-    data = data["results"][0]["lexicalEntries"];
-    let word = {};
-    word["about"] = {
-
+const getExamples = (sense) => {
+    let examples = [];
+    if ("examples" in sense) {
+        sense["examples"].forEach(example => {
+            examples.push(example["text"]);
+        })
     }
-    word["about"]["etymology"] = data[0]["entries"][0]["etymologies"][0]
-    data[0]["entries"][0]["pronunciations"].forEach((pronunc, j) => {
+    return examples;
+}
+/**
+ * 
+ * @param {String} data 
+ * @returns {Object}
+ */
+const getAbout = (data) => {
+    let about = {
+        "etymology": data["etymologies"][0]
+    }
+    data["pronunciations"].forEach((pronunc) => {
         if (pronunc.hasOwnProperty("audioFile")) {
-            word["about"]["pronunciations"] = pronunc["audioFile"]
+            about["pronunciations"] = pronunc["audioFile"]
         }
         if (pronunc.hasOwnProperty("phoneticNotation") && pronunc["phoneticNotation"] === "IPA") {
-            word["about"]["phonetic spelling"] = pronunc["phoneticSpelling"]
+            about["phonetic spelling"] = pronunc["phoneticSpelling"]
         }
     })
+    return about;
+}
+const parseJSON = (data) => {
+    data = data["results"][0]["lexicalEntries"];
+    let word = {
+        "about": getAbout(data[0]["entries"][0])
+    };
     for (let i = 0; i < data.length; i++) {
         word[i] = {
             "senses": [],
@@ -46,31 +66,18 @@ const parseJSON = (data) => {
         }
         data[i]["entries"].forEach((result) => {
             result['senses'].forEach((sense) => {
-                let examples = []
-                if ("examples" in sense) {
-                    sense["examples"].forEach(example => {
-                        examples.push(example["text"])
-                    })
-                }
                 let senseObj = {
                     "definitions": sense["definitions"][0],
-                    "examples": examples
+                    "examples": getExamples(sense)
                 }
                 if ("subsenses" in sense) {
                     senseObj["subsenses"] = [];
                     let subsenses = [];
-                    sense["subsenses"].forEach((subsense, l) => {
+                    sense["subsenses"].forEach((subsense) => {
                         let sub = {
                             "definition": subsense["definitions"][0],
-                            "examples": []
+                            "examples": getExamples(subsense)
                         }
-                        let examples = []
-                        if ('examples' in subsense) {
-                            subsense["examples"].forEach(example => {
-                                examples.push(example["text"])
-                            })
-                        }
-                        sub["examples"] = examples;
                         subsenses.push(sub);
                     })
                     senseObj["subsenses"] = subsenses;
@@ -83,25 +90,22 @@ const parseJSON = (data) => {
 }
 
 const getInfo = (word) => {
-    options.path = '/api/v2/entries/en-gb/' + word + '?fields=' + fields + '&strictMatch=' + strictMatch
+    options.path = '/api/v2/entries/en-us/' + word + '?fields=' + fields + '&strictMatch=' + strictMatch
     return fetch("https://" + options.host + options.path, options)
         .then(resp => {
             return resp.json()
         })
         .then(data => parseJSON(data));
 }
-// app.get("/", (req, res) => {
-//     console.log("send index")
-//     res.sendFile(path.resolve(__dirname, 'client/build', 'index.html'))
-// })
 app.get("/search", async (req, res) => {
     let word = req.query.word;
-    console.log(word);
-    // res.send(`<h1>${word}</h1>`);
     let data = await getInfo(word)
     res.json(data);
 })
 
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + 'client/build/index.html'))
+})
 
 function logger(req, res, next) {
     console.log(req.originalUrl);
@@ -111,5 +115,3 @@ function logger(req, res, next) {
 app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`)
 })
-
-module.exports = {port};

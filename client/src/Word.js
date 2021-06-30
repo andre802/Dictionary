@@ -13,8 +13,7 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
 
     }
     entries = allEntries;
-    console.log(`Entries:`)
-    console.log(entries);
+    
     // eslint-disable-next-line
 
     if (!word) return null;
@@ -38,7 +37,7 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
                             <h3>Definition</h3>
                             <p>{sense["definitions"]}</p>
                         </div>
-                        {sense["examples"] !== undefined ? (
+                        {sense["examples"] !== undefined && sense["examples"].length !== 0 ? (
                             <div className="examples">
                                 <h4>Examples</h4>
                                 {sense["examples"].map(ex => {
