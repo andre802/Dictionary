@@ -1,18 +1,7 @@
 
 
-const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
-    let entries = {};
-    let allEntries = {};
-    let relevantEntries = Object.keys(senses).filter(el => el !== "about");
-    for (let i = 0; i < relevantEntries.length; i++) {
-        allEntries[i] = {
-            "about": ""
-        };
-
-        allEntries[i] = senses[relevantEntries[i]];
-
-    }
-    entries = allEntries;
+const Word = ({ etymology, phoneticSpelling, entries, word, pronunciation }) => {
+    
     
     // eslint-disable-next-line
 
@@ -28,16 +17,16 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
                     src={pronunciation}
                 ></audio>
             </div>
-            {Object.keys(entries).length !== 0 ? Object.keys(entries).map(entryKey => (
+            {entries.map(entry => (
                 <div className="sense">
-                    <p>{entries[entryKey]["category"]}</p>
-                    {entries[entryKey]["senses"].map(sense => (
+                    <p>{entry["category"]}</p>
+                    {entry["senses"].map(sense => (
                         <>
                         <div className="definition">
                             <h3>Definition</h3>
                             <p>{sense["definitions"]}</p>
                         </div>
-                        {sense["examples"] !== undefined && sense["examples"].length !== 0 ? (
+                        {sense["examples"].length !== 0 ? (
                             <div className="examples">
                                 <h4>Examples</h4>
                                 {sense["examples"].map(ex => {
@@ -52,7 +41,7 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
                                     <h4>Subsense</h4>
                                     <h5>Definition</h5>
                                     <p>{subsense["definition"]}</p>
-                                    {subsense["examples"] ? (
+                                    {subsense["examples"].length !== 0 ? (
                                         <div>
                                             <h5>Example</h5>
                                             {subsense["examples"].map(ex => {
@@ -62,7 +51,7 @@ const Word = ({ etymology, phoneticSpelling, senses, word, pronunciation }) => {
                                         </div>) : ""}
                                 </div>
                              ))) : ""}</>))}
-                            </div>)) : ""}
+                            </div>)) }
                         </div>
     )}
         
