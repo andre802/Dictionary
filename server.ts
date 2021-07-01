@@ -3,11 +3,13 @@ require('dotenv').config();
 const express = require("express");
 const nodeFetch = require("node-fetch");
 const path = require('path');
+const cors = require("cors");
+
 const port = process.env.PORT || 3000;
 const app_id = process.env.APP_ID;
 const app_key = process.env.APP_KEY;
 
-const cors = require("cors");
+
 const app = express();
 app.use(logger);
 app.use(cors());
@@ -26,15 +28,7 @@ const options = {
         'app_key': app_key
     }
 };
-const getExamples = (sense: any): Array<string> => {
-    let examples: Array<string> = [];
-    if ("examples" in sense) {
-        sense["examples"].forEach((example: any) => {
-            examples.push(example["text"]);
-        })
-    }
-    return examples;
-}
+
 interface About {
     etymology: String,
     "pronunciations": String,
@@ -54,13 +48,29 @@ interface Subsense {
     examples: Array<string>
 }
 interface Word {
-        about: About,
-        entries: Array<Entry>
+    about: About,
+    entries: Array<Entry>
+}
+/**
+ * Parses the passed in object for examples and returns
+ * the examples found.
+ * @param sense
+ * @returns Array<String>
+ */
+const getExamples = (sense: any): Array<string> => {
+    let examples: Array<string> = [];
+    if ("examples" in sense) {
+        sense["examples"].forEach((example: any) => {
+            examples.push(example["text"]);
+        })
     }
+    return examples;
+}
 /**
  * 
  * @param {Object} data 
- * @returns {Object}
+ * @returns {About} information(etymology, pronunciations, phonetic spelling 
+ * about the word}
  */
 const getAbout = (data: any): About => {
     let about: About = {
@@ -78,7 +88,14 @@ const getAbout = (data: any): About => {
     })
     return about;
 }
-const parseJSON = (data: any): any => {
+/**
+ * 
+ * @param data JSON object containing information about the word
+ * supplied by the user
+ * @returns word object containing semantic information and dictionary entries
+ * parsed from the passed in JSON
+ */
+const parseJSON = (data: any): Word => {
     let entries = data["results"][0]["lexicalEntries"];
     let word: Word = {
         "about": getAbout(data["results"][0]["lexicalEntries"][0]["entries"][0]),

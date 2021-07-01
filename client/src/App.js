@@ -3,10 +3,8 @@ import Word from './Word';
 function App() {
   const [entry, setEntry] = useState({});
   const [word, setWord] = useState("");
-  console.log(entry);
   function getData (e)  {
     e.preventDefault();
-    console.log("click");
     if (document.getElementById("word").value === "") return;
     setWord(document.getElementById("word").value);
     fetch(`/search?word=${document.getElementById("word").value}`)
@@ -25,7 +23,6 @@ function App() {
       <label>Word <input
         type="text"
         id="word"
-      
       />
         <button
           type="button"

@@ -1,10 +1,7 @@
 
 
 const Word = ({ etymology, phoneticSpelling, entries, word, pronunciation }) => {
-    
-    
     // eslint-disable-next-line
-
     if (!word) return null;
     return (
         <div key={word} className="entry">

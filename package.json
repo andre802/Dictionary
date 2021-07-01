@@ -1,7 +1,7 @@
 {
   "name": "dictionary",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "start": "node server.ts",
     "heroku-postbuild": "cd client && npm install && npm run build",
